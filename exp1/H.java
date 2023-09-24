@@ -3,35 +3,45 @@ import java.util.Scanner;
 public class H {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        while (sc.hasNext()) {
-            String s1 = sc.next(), s2 = sc.next();
-            int windowSize = sc.nextInt();
-            int i = 0, j = 0;
-            int max = 0;
-            int pos1 = -1, pos2 = -1;
-            for (i = 0; i < s1.length(); i++) {
-                for (j = 0; j < s2.length(); j++) {
-                    int cnt = 0;
-                    for (int k = 0; k < windowSize; k++) {
-                        if ( i + k >= s1.length() || j + k >= s2.length() || s1.charAt(i + k) != s2.charAt(j + k)) {
-                            break;
-                        }
-                        cnt++;
-                    }
-                    if (cnt > max) {
-                        max = cnt;
-                        pos1 = i;
-                        pos2 = j;
+        int row = sc.nextInt(), col = sc.nextInt();
+        int[][] matrix = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            int[] line = new int[col];
+            for (int j = 0; j < col; j++) {
+                line[j] = sc.nextInt();
+            }
+            matrix[i] = line;
+        }
+        int[][] res = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                int num = matrix[i][j];
+                int[] neighbors = new int[8];
+                int[] dx = { -1, -1, -1, 0, 1, 1, 1, 0 };
+                int[] dy = { -1, 0, 1, 1, 1, 0, -1, -1 };
+                for (int k = 0; k < 8; k++) {
+                    int x = i + dx[k], y = j + dy[k];
+                    if (x >= 0 && x < row && y >= 0 && y < col) {
+                        neighbors[k] = matrix[x][y];
+                    } else {
+                        neighbors[k] = 0;
                     }
                 }
+                int code = 0;
+                for (int k = 0; k < 8; k++) {
+                    if (num >= neighbors[k]) {
+                        code += (int) Math.pow(2, k);
+                    }
+                }
+                res[i][j] = code;
             }
-            String res = "";
-            while (pos1 < s1.length() && pos2 < s2.length() && s1.charAt(pos1) == s2.charAt(pos2)) {
-                res += s1.charAt(pos1);
-                pos1++;
-                pos2++;
+        }
+        for (int i = 0; i < row; i++) {
+            int[] line = res[i];
+            for (int j = 0; j < col; j++) {
+                System.out.printf("%4d", line[j]);
             }
-            System.out.println(res);
+            System.out.println();
         }
         sc.close();
     }
